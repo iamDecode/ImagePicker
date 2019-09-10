@@ -24,6 +24,11 @@ class ImageProvider {
 
   fileprivate let imageManager = PHCachingImageManager()
 
+  deinit {
+    imageManager.stopCachingImagesForAllAssets()
+    fetchedResults = nil
+  }
+
   var numberOfAssets: Int {
     return fetchedResults?.count ?? 0
   }

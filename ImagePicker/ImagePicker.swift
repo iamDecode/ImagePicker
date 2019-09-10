@@ -47,7 +47,7 @@ public class ImagePicker: UICollectionView {
 
   public fileprivate(set) var previewsExpanded = false
 
-  fileprivate var provider = ImageProvider()
+  fileprivate var provider: ImageProvider?
 
   fileprivate var selection: OrderedSet<IndexPath> = []
 
@@ -62,6 +62,11 @@ public class ImagePicker: UICollectionView {
     self.alertController = alertController
     delegate = self
     dataSource = self
+    provider = ImageProvider()
+  }
+
+  deinit {
+    provider = nil
   }
 
   override public func didMoveToWindow() {
@@ -93,7 +98,7 @@ public class ImagePicker: UICollectionView {
     alertHeightConstraint.priority = .defaultHigh
     alertHeightConstraint.isActive = true
 
-    provider.fetchAssets(for: mediaType)
+    provider?.fetchAssets(for: mediaType)
     reloadData()
   }
 
@@ -144,16 +149,16 @@ extension ImagePicker: UICollectionViewDataSource {
   }
 
   public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    return provider.numberOfAssets
+    return provider?.numberOfAssets ?? 0
   }
 
   public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NSStringFromClass(ImagePickerCell.self), for: indexPath) as! ImagePickerCell
 
-    if let asset = provider.asset(for: indexPath) {
+    if let asset = provider?.asset(for: indexPath) {
       cell.videoIndicatorView.isHidden = asset.mediaType != .video
 
-      provider.image(for: asset) { image in
+      provider?.image(for: asset) { image in
         cell.imageView.image = image
       }
     }
@@ -175,7 +180,7 @@ extension ImagePicker: UICollectionViewDelegate {
       }
       selection.removeObject(at: 0)
 
-      pickerDelegate?.controller?(self, didSelectAsset: provider.asset(for: indexPath))
+      pickerDelegate?.controller?(self, didSelectAsset: provider?.asset(for: indexPath))
     }
 
     selection.append(indexPath)
@@ -208,8 +213,8 @@ extension ImagePicker: UICollectionViewDelegate {
       if let cell = cellForItem(at: indexPath) as? ImagePickerCell {
         cell.updateSelection(isSelected: false)
       }
-
-      pickerDelegate?.controller?(self, didDeselectAsset: provider.asset(for: indexPath))
+      
+      pickerDelegate?.controller?(self, didDeselectAsset: provider?.asset(for: indexPath))
     }
   }
 
@@ -260,11 +265,9 @@ extension ImagePicker: ImagePickerLayoutDelegate {
   }
 
   func collectionView(_ collectionView: UICollectionView, layout: UICollectionViewLayout, largeSizeForItemAt indexPath: IndexPath) -> CGSize {
-    guard let asset = provider.asset(for: indexPath) else {
+    guard let asset = provider?.asset(for: indexPath), let size = provider?.size(for: asset) else {
       return .zero
     }
-
-    let size = provider.size(for: asset)
 
     let currentImagePreviewHeight = expandedPreviewHeight - 2 * previewInset
     let scale = currentImagePreviewHeight / size.height
