@@ -57,7 +57,7 @@ public class ImagePicker: UICollectionView {
     return false
   }
 
-  required convenience init(alertController: UIAlertController) {
+  public required convenience init(alertController: UIAlertController) {
     self.init(frame: .zero, collectionViewLayout: ImagePickerLayout())
     self.alertController = alertController
     delegate = self

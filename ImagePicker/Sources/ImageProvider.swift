@@ -43,9 +43,16 @@ class ImageProvider {
 
     // Workaround because PHImageManager.requestImageForAsset doesn't work for burst images
     if asset.representsBurst {
-      imageManager.requestImageDataAndOrientation(for: asset, options: requestOptions) { data, _, _, _ in
-        let image = data.flatMap { UIImage(data: $0) }
-        completion(image)
+      if #available(iOS 13, *) {
+        imageManager.requestImageDataAndOrientation(for: asset, options: requestOptions) { data, _, _, _ in
+          let image = data.flatMap { UIImage(data: $0) }
+          completion(image)
+        }
+      } else {
+        imageManager.requestImageData(for: asset, options: requestOptions) { data, _, _, _ in
+          let image = data.flatMap { UIImage(data: $0) }
+          completion(image)
+        }
       }
     }
     else {

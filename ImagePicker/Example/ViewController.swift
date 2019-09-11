@@ -7,7 +7,9 @@
 //
 
 import UIKit
+import ImagePicker
 import Photos
+
 
 class ViewController: UIViewController, ImagePickerDelegate {
   @IBAction func presentImagePickerSheet(gestureRecognizer: UITapGestureRecognizer) {
