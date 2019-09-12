@@ -37,9 +37,10 @@ class ImagePickerCell: UICollectionViewCell {
     return imageView
   }()
 
-  fileprivate static var videoImage = #imageLiteral(resourceName: "video")
-
   let videoIndicatorView: UIImageView = {
+    let bundle = Bundle(for: ImagePicker.self)
+    let videoImage = UIImage(named: "video", in: bundle, compatibleWith: nil)
+
     let imageView = UIImageView(image: videoImage)
     imageView.tintColor = .white
     imageView.isHidden = true

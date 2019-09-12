@@ -9,9 +9,6 @@
 import UIKit
 
 class ImagePickerCheckmark: UIButton {
-  fileprivate static var checkmarkImage: UIImage = #imageLiteral(resourceName: "checkmark")
-  fileprivate static var selectedCheckmarkImage: UIImage = #imageLiteral(resourceName: "checkmark-selected")
-
   override var isSelected: Bool {
     didSet {
       reloadButtonBackgroundColor()
@@ -32,8 +29,13 @@ class ImagePickerCheckmark: UIButton {
     tintColor = .white
     layer.cornerRadius = frame.height / 2
     isUserInteractionEnabled = false
-    setImage(ImagePickerCheckmark.checkmarkImage, for: UIControl.State())
-    setImage(ImagePickerCheckmark.selectedCheckmarkImage, for: .selected)
+
+    let bundle = Bundle(for: ImagePicker.self)
+    let checkmarkImage = UIImage(named: "checkmark", in: bundle, compatibleWith: nil)
+    let selectedCheckmarkImage = UIImage(named: "checkmark-selected", in: bundle, compatibleWith: nil)
+
+    setImage(checkmarkImage, for: UIControl.State())
+    setImage(selectedCheckmarkImage, for: .selected)
   }
 
   override func tintColorDidChange() {
