@@ -12,7 +12,9 @@ import Photos
 
 
 class ViewController: UIViewController, ImagePickerDelegate {
-  @IBAction func presentImagePickerSheet(gestureRecognizer: UITapGestureRecognizer) {
+  @IBAction func presentImagePickerSheet(gestureRecognizer: UITapGestureRecognizer?) {
+    guard checkImageAuthorizationStatus() else { return }
+
     let alertController = UIAlertController()
 
     let picker = ImagePicker(alertController: alertController)
@@ -35,5 +37,25 @@ class ViewController: UIViewController, ImagePickerDelegate {
     }
 
     present(alertController, animated: true, completion: nil)
+  }
+
+  fileprivate func checkImageAuthorizationStatus() -> Bool {
+    let authorizationStatus = PHPhotoLibrary.authorizationStatus()
+
+    switch authorizationStatus {
+    case .notDetermined:
+      PHPhotoLibrary.requestAuthorization() { [weak self] _ in
+        DispatchQueue.main.async {
+          self?.presentImagePickerSheet(gestureRecognizer: nil)
+        }
+      }
+      return false
+    case .denied, .restricted:
+      return false
+    case .authorized:
+      return true
+    @unknown default:
+      fatalError()
+    }
   }
 }
