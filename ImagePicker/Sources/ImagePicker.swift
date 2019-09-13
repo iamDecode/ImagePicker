@@ -24,8 +24,7 @@ public enum ImagePickerMediaType {
 
 
 @objc public protocol ImagePickerDelegate {
-    @objc optional func controller(_ controller: ImagePicker, didSelectAsset asset: PHAsset?)
-    @objc optional func controller(_ controller: ImagePicker, didDeselectAsset asset: PHAsset?)
+    @objc optional func imagePicker(_ alertController: UIAlertController, didUpdateSelection assets: [PHAsset])
 }
 
 
@@ -180,8 +179,6 @@ extension ImagePicker: UICollectionViewDelegate {
         cell.updateSelection(isSelected: false)
       }
       selection.removeObject(at: 0)
-
-      pickerDelegate?.controller?(self, didSelectAsset: provider?.asset(for: indexPath))
     }
 
     selection.append(indexPath)
@@ -203,6 +200,11 @@ extension ImagePicker: UICollectionViewDelegate {
     if let cell = cellForItem(at: indexPath) as? ImagePickerCell {
       cell.updateSelection(isSelected: true)
     }
+
+    if let alertController = alertController {
+      let assets = selection.compactMap { provider?.asset(for: $0) }
+      pickerDelegate?.imagePicker?(alertController, didUpdateSelection: assets)
+    }
   }
 
   public func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
@@ -214,8 +216,11 @@ extension ImagePicker: UICollectionViewDelegate {
       if let cell = cellForItem(at: indexPath) as? ImagePickerCell {
         cell.updateSelection(isSelected: false)
       }
-      
-      pickerDelegate?.controller?(self, didDeselectAsset: provider?.asset(for: indexPath))
+
+      if let alertController = alertController {
+        let assets = selection.compactMap { provider?.asset(for: $0) }
+        pickerDelegate?.imagePicker?(alertController, didUpdateSelection: assets)
+      }
     }
   }
 
