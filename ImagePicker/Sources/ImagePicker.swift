@@ -39,6 +39,8 @@ public class ImagePicker: UICollectionView {
 
   weak var alertHeightConstraint: NSLayoutConstraint!
 
+  weak var landscapeConstraint: NSLayoutConstraint?
+
   public var pickerDelegate: ImagePickerDelegate?
 
   public var maximumSelection: Int = 1
@@ -55,6 +57,20 @@ public class ImagePicker: UICollectionView {
     if contentOffset.x < -contentInset.left { return true }
     if contentOffset.x + frame.width > contentSize.width + contentInset.right { return true }
     return false
+  }
+
+  var isLandscape: Bool {
+    let orientation = UIDevice.current.orientation
+
+    if orientation == .unknown {
+      if #available(iOS 13, *) {
+        return window?.windowScene?.interfaceOrientation.isLandscape ?? false
+      } else {
+        return UIApplication.shared.statusBarOrientation.isLandscape
+      }
+    }
+
+    return orientation.isLandscape
   }
 
   public required convenience init(alertController: UIAlertController) {
@@ -88,18 +104,33 @@ public class ImagePicker: UICollectionView {
     register(ImagePickerCell.self, forCellWithReuseIdentifier: NSStringFromClass(ImagePickerCell.self))
 
     topAnchor.constraint(equalTo: alertController.view.topAnchor, constant: 0).isActive = true
-    rightAnchor.constraint(equalTo: alertController.view.rightAnchor, constant: 0).isActive = true
+    if let view = alertController.view.subviews.first?.subviews.first {
+      rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0).isActive = true
+    } else {
+      rightAnchor.constraint(equalTo: alertController.view.rightAnchor, constant: 0).isActive = true
+    }
     leftAnchor.constraint(equalTo: alertController.view.leftAnchor, constant: 0).isActive = true
     let height = previewsExpanded ? expandedPreviewHeight : previewHeight
     previewHeightConstraint = heightAnchor.constraint(equalToConstant: height)
     previewHeightConstraint.isActive = true
-    let alertHeight = previewHeightConstraint.constant + alertController.baseHeight
+    let alertHeight = previewHeightConstraint.constant + calcHeight(for: alertController)
     alertHeightConstraint = alertController.view.heightAnchor.constraint(equalToConstant: alertHeight)
-    alertHeightConstraint.priority = .defaultHigh
     alertHeightConstraint.isActive = true
+
+    landscapeConstraint = alertController.view.subviews.first?.subviews.first?.bottomAnchor.constraint(equalTo: alertController.view.bottomAnchor)
+    landscapeConstraint?.isActive = true
+    landscapeConstraint?.priority = isLandscape ? .defaultHigh : .defaultLow
+
+    NotificationCenter.default.addObserver(self, selector: #selector(ImagePicker.rotated), name: UIDevice.orientationDidChangeNotification, object: nil)
 
     provider?.fetchAssets(for: mediaType)
     reloadData()
+  }
+
+  @objc func rotated() {
+    updatePreviewHeight()
+
+    landscapeConstraint?.priority = isLandscape ? .defaultHigh : .defaultLow
   }
 
   func expandPreview(for indexPath: IndexPath, completion: (() -> ())? = nil) {
@@ -136,8 +167,25 @@ public class ImagePicker: UICollectionView {
   func updatePreviewHeight() {
     let height = previewsExpanded ? expandedPreviewHeight : previewHeight
     previewHeightConstraint.constant = height
-    alertHeightConstraint.constant = height + (alertController?.baseHeight ?? 0)
+    alertHeightConstraint.constant = height + calcHeight(for: alertController)
+
+    alertHeightConstraint.priority = isLandscape ? .required : .defaultHigh
+
     alertController?.view.superview?.layoutIfNeeded()
+  }
+
+  func calcHeight(for alertController: UIAlertController?) -> CGFloat {
+    guard let alertController = alertController else { return 0 }
+
+    if UIDevice.current.userInterfaceIdiom == .phone && isLandscape {
+      return 65
+    }
+
+    var height = alertController.actions.filter { $0.style != .cancel }.map { _ in CGFloat(58) }.reduce(0, +)
+    if alertController.actions.contains(where: { $0.style == .cancel }) && UIDevice.current.userInterfaceIdiom == .phone  {
+      height += 65
+    }
+    return height
   }
 }
 
@@ -279,16 +327,5 @@ extension ImagePicker: ImagePickerLayoutDelegate {
     let scale = currentImagePreviewHeight / size.height
 
     return CGSize(width: size.width * scale, height: currentImagePreviewHeight)
-  }
-}
-
-
-extension UIAlertController {
-  var baseHeight: CGFloat {
-    var height = actions.filter { $0.style != .cancel }.map { _ in CGFloat(58) }.reduce(0, +)
-    if actions.contains(where: { $0.style == .cancel }) && UIDevice.current.userInterfaceIdiom == .phone  {
-      height += 65
-    }
-    return height
   }
 }
