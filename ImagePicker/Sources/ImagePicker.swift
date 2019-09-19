@@ -53,6 +53,10 @@ public class ImagePicker: UICollectionView {
 
   fileprivate var selection: OrderedSet<IndexPath> = []
 
+  public var selectedAssets: [PHAsset] {
+    return selection.compactMap { provider?.asset(for: $0) }
+  }
+
   var bouncing: Bool {
     if contentOffset.x < -contentInset.left { return true }
     if contentOffset.x + frame.width > contentSize.width + contentInset.right { return true }
