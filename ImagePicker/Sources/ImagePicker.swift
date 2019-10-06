@@ -173,7 +173,7 @@ public class ImagePicker: UICollectionView {
     previewHeightConstraint.constant = height
     alertHeightConstraint.constant = height + calcHeight(for: alertController)
 
-    alertHeightConstraint.priority = isLandscape ? .required : .defaultHigh
+    alertHeightConstraint.priority = .defaultHigh + 1
 
     alertController?.view.superview?.layoutIfNeeded()
   }
