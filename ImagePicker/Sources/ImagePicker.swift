@@ -95,7 +95,7 @@ public class ImagePicker: UICollectionView {
   }
 
   private func configureView() {
-    guard let alertController = alertController else { return }
+    guard let alertController = alertController, alertHeightConstraint == nil else { return }
 
     translatesAutoresizingMaskIntoConstraints = false
     alertController.view.translatesAutoresizingMaskIntoConstraints = false
