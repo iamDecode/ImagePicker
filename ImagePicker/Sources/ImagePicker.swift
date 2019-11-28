@@ -119,11 +119,12 @@ public class ImagePicker: UICollectionView {
     previewHeightConstraint.isActive = true
     let alertHeight = previewHeightConstraint.constant + calcHeight(for: alertController)
     alertHeightConstraint = alertController.view.heightAnchor.constraint(equalToConstant: alertHeight)
+    alertHeightConstraint.priority = .defaultHigh + 1
     alertHeightConstraint.isActive = true
 
     landscapeConstraint = alertController.view.subviews.first?.subviews.first?.bottomAnchor.constraint(equalTo: alertController.view.bottomAnchor)
-    landscapeConstraint?.isActive = true
     landscapeConstraint?.priority = isLandscape ? .defaultHigh : .defaultLow
+    landscapeConstraint?.isActive = true
 
     NotificationCenter.default.addObserver(self, selector: #selector(ImagePicker.rotated), name: UIDevice.orientationDidChangeNotification, object: nil)
 
@@ -172,7 +173,6 @@ public class ImagePicker: UICollectionView {
     let height = previewsExpanded ? expandedPreviewHeight : previewHeight
     previewHeightConstraint.constant = height
     alertHeightConstraint.constant = height + calcHeight(for: alertController)
-
     alertHeightConstraint.priority = .defaultHigh + 1
 
     alertController?.view.superview?.layoutIfNeeded()
