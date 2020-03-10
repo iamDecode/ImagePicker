@@ -64,6 +64,7 @@
 		9559AA0C23258EA700D6DEBC /* ImagePickerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerCell.swift; sourceTree = "<group>"; };
 		9559AA0E23258F1200D6DEBC /* ImagePickerCheckmark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerCheckmark.swift; sourceTree = "<group>"; };
 		9559AA102325931C00D6DEBC /* ImageProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageProvider.swift; sourceTree = "<group>"; };
+		955C9B6B2418312000081322 /* Example.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Example.entitlements; sourceTree = "<group>"; };
 		955EBD3D2329857F008F9A4D /* ImagePicker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ImagePicker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		955EBD5123298791008F9A4D /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		955EBD5223298791008F9A4D /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -104,6 +105,7 @@
 		9559A9D923252EC400D6DEBC = {
 			isa = PBXGroup;
 			children = (
+				955C9B6B2418312000081322 /* Example.entitlements */,
 				9559A9E423252EC400D6DEBC /* ImagePicker */,
 				9559A9E323252EC400D6DEBC /* Products */,
 				955EBD8123298D8F008F9A4D /* Frameworks */,
@@ -559,7 +561,9 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Example.entitlements;
 				CODE_SIGN_STYLE = Automatic;
+				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = YES;
 				DEVELOPMENT_TEAM = P2BY58D85Z;
 				INFOPLIST_FILE = "ImagePicker/Example/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -568,6 +572,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = cocode.ImagePickerExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -579,7 +584,9 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Example.entitlements;
 				CODE_SIGN_STYLE = Automatic;
+				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = YES;
 				DEVELOPMENT_TEAM = P2BY58D85Z;
 				INFOPLIST_FILE = "ImagePicker/Example/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -588,6 +595,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = cocode.ImagePickerExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
