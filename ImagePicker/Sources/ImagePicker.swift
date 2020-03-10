@@ -108,11 +108,17 @@ public class ImagePicker: UICollectionView {
     register(ImagePickerCell.self, forCellWithReuseIdentifier: NSStringFromClass(ImagePickerCell.self))
 
     topAnchor.constraint(equalTo: alertController.view.topAnchor, constant: 0).isActive = true
+
+    #if targetEnvironment(macCatalyst)
+    rightAnchor.constraint(equalTo: alertController.view.rightAnchor, constant: 0).isActive = true
+    #else
     if let view = alertController.view.subviews.first?.subviews.first {
       rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0).isActive = true
     } else {
       rightAnchor.constraint(equalTo: alertController.view.rightAnchor, constant: 0).isActive = true
     }
+    #endif
+
     leftAnchor.constraint(equalTo: alertController.view.leftAnchor, constant: 0).isActive = true
     let height = previewsExpanded ? expandedPreviewHeight : previewHeight
     previewHeightConstraint = heightAnchor.constraint(equalToConstant: height)
@@ -122,9 +128,11 @@ public class ImagePicker: UICollectionView {
     alertHeightConstraint.priority = .defaultHigh + 1
     alertHeightConstraint.isActive = true
 
+    #if !targetEnvironment(macCatalyst)
     landscapeConstraint = alertController.view.subviews.first?.subviews.first?.bottomAnchor.constraint(equalTo: alertController.view.bottomAnchor)
     landscapeConstraint?.priority = isLandscape ? .defaultHigh : .defaultLow
     landscapeConstraint?.isActive = true
+    #endif
 
     NotificationCenter.default.addObserver(self, selector: #selector(ImagePicker.rotated), name: UIDevice.orientationDidChangeNotification, object: nil)
 
@@ -135,7 +143,9 @@ public class ImagePicker: UICollectionView {
   @objc func rotated() {
     updatePreviewHeight()
 
+    #if !targetEnvironment(macCatalyst)
     landscapeConstraint?.priority = isLandscape ? .defaultHigh : .defaultLow
+    #endif
   }
 
   func expandPreview(for indexPath: IndexPath, completion: (() -> ())? = nil) {
@@ -226,6 +236,25 @@ extension ImagePicker: UICollectionViewDataSource {
 
 extension ImagePicker: UICollectionViewDelegate {
   public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    #if targetEnvironment(macCatalyst)
+    if selection.remove(indexPath) != nil {
+      if selection.isEmpty {
+        shrinkPreview(for: indexPath)
+      }
+
+      if let cell = cellForItem(at: indexPath) as? ImagePickerCell {
+        cell.updateSelection(isSelected: false)
+      }
+
+      if let alertController = alertController {
+        let assets = selection.compactMap { provider?.asset(for: $0) }
+        pickerDelegate?.imagePicker?(alertController, didUpdateSelection: assets)
+      }
+
+      return
+    }
+    #endif
+
     if selection.count >= maximumSelection, let deselectedIndexPath = selection.first {
       if let cell = cellForItem(at: deselectedIndexPath) as? ImagePickerCell {
         cell.updateSelection(isSelected: false)
@@ -260,6 +289,7 @@ extension ImagePicker: UICollectionViewDelegate {
   }
 
   public func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+    #if !targetEnvironment(macCatalyst)
     if selection.remove(indexPath) != nil {
       if selection.isEmpty {
         shrinkPreview(for: indexPath)
@@ -274,6 +304,7 @@ extension ImagePicker: UICollectionViewDelegate {
         pickerDelegate?.imagePicker?(alertController, didUpdateSelection: assets)
       }
     }
+    #endif
   }
 
   public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
