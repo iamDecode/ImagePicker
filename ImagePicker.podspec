@@ -1,7 +1,7 @@
 Pod::Spec.new do |spec|
-  spec.name = 'ImagePicker'
+  spec.name = 'CCLImagePicker'
   spec.version = '0.0.1'
-  spec.summary = 'ImagePicker allows you to preview and select photos right from a native UIAlertController.'
+  spec.summary = 'CCLImagePicker allows you to preview and select photos right from a native UIAlertController.'
   spec.homepage = 'https://github.com/iamDecode/ImagePicker'
   spec.license = { :type => 'BSD', :file => 'LICENSE' }
   spec.author = { 'Dennis Collaris' => 'd.collaris@me.com' }
