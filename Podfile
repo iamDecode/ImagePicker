@@ -8,5 +8,6 @@ target 'ImagePicker' do
   use_frameworks!
 
   # Pods for ImagePicker
+  pod 'OrderedSet.swift'
   pod 'OrderedSet'
 end
