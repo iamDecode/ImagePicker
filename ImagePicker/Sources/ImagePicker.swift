@@ -8,7 +8,7 @@
 
 import UIKit
 import Photos
-import OrderedSet
+import OrderedSet_swift
 
 
 var previewInset: CGFloat = 8
@@ -230,7 +230,7 @@ extension ImagePicker: UICollectionViewDelegate {
       if let cell = cellForItem(at: deselectedIndexPath) as? ImagePickerCell {
         cell.updateSelection(isSelected: false)
       }
-      selection.removeObject(at: 0)
+      let _ = selection.removeFirst()
     }
 
     selection.append(indexPath)
