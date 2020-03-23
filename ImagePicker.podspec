@@ -11,6 +11,6 @@ Pod::Spec.new do |spec|
   spec.framework = "Photos"
   spec.requires_arc = true
   spec.ios.deployment_target = '10.2'
-  spec.dependency 'OrderedSet', '~> 5.0'
+  spec.dependency 'OrderedSet.swift', '~> 0.1'
   spec.swift_version = '5.0'
 end

@@ -9,5 +9,4 @@ target 'ImagePicker' do
 
   # Pods for ImagePicker
   pod 'OrderedSet.swift'
-  pod 'OrderedSet'
 end

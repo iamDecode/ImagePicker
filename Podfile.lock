@@ -1,21 +1,16 @@
 PODS:
-  - OrderedSet (5.0.0)
   - OrderedSet.swift (0.1.0)
 
 DEPENDENCIES:
-  - OrderedSet
   - OrderedSet.swift
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
-    - OrderedSet
   trunk:
     - OrderedSet.swift
 
 SPEC CHECKSUMS:
-  OrderedSet: aaeb196f7fef5a9edf55d89760da9176ad40b93c
   OrderedSet.swift: 06fda70b3c42e1bc812c1b2901f4edeccc4854b3
 
-PODFILE CHECKSUM: 987a243b267bf0b91037ac2da43e021c97b55383
+PODFILE CHECKSUM: 07f657c9628125ce17d0a10721793c6b88b72be5
 
 COCOAPODS: 1.9.1
