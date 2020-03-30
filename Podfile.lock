@@ -1,5 +1,5 @@
 PODS:
-  - OrderedSet.swift (0.1.0)
+  - OrderedSet.swift (0.1.1)
 
 DEPENDENCIES:
   - OrderedSet.swift
@@ -9,7 +9,7 @@ SPEC REPOS:
     - OrderedSet.swift
 
 SPEC CHECKSUMS:
-  OrderedSet.swift: 06fda70b3c42e1bc812c1b2901f4edeccc4854b3
+  OrderedSet.swift: a277a869fa2a8f09eb4336187310c7f44930a441
 
 PODFILE CHECKSUM: 07f657c9628125ce17d0a10721793c6b88b72be5
 

@@ -8,7 +8,7 @@
 
 import UIKit
 import Photos
-import OrderedSet_swift
+import OrderedSet
 
 
 var previewInset: CGFloat = 8
