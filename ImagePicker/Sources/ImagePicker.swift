@@ -134,13 +134,11 @@ public class ImagePicker: UICollectionView {
     landscapeConstraint?.isActive = true
     #endif
 
-    NotificationCenter.default.addObserver(self, selector: #selector(ImagePicker.rotated), name: UIDevice.orientationDidChangeNotification, object: nil)
-
     provider?.fetchAssets(for: mediaType)
     reloadData()
   }
 
-  @objc func rotated() {
+  public override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
     updatePreviewHeight()
 
     #if !targetEnvironment(macCatalyst)
@@ -189,14 +187,16 @@ public class ImagePicker: UICollectionView {
   }
 
   func calcHeight(for alertController: UIAlertController?) -> CGFloat {
-    guard let alertController = alertController else { return 0 }
+    guard let window = window, let alertController = alertController else { return 0 }
 
-    if UIDevice.current.userInterfaceIdiom == .phone && isLandscape {
+    if traitCollection.verticalSizeClass == .compact {
       return 65
     }
 
     var height = alertController.actions.filter { $0.style != .cancel }.map { _ in CGFloat(58) }.reduce(0, +)
-    if alertController.actions.contains(where: { $0.style == .cancel }) && UIDevice.current.userInterfaceIdiom == .phone  {
+
+
+    if alertController.actions.contains(where: { $0.style == .cancel }) && window.traitCollection.horizontalSizeClass == .compact {
       height += 65
     }
     return height
