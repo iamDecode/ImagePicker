@@ -195,10 +195,12 @@ public class ImagePicker: UICollectionView {
 
     var height = alertController.actions.filter { $0.style != .cancel }.map { _ in CGFloat(58) }.reduce(0, +)
 
-
+    #if !targetEnvironment(macCatalyst)
     if alertController.actions.contains(where: { $0.style == .cancel }) && window.traitCollection.horizontalSizeClass == .compact {
       height += 65
     }
+    #endif
+
     return height
   }
 }
