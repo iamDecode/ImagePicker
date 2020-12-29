@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol ImagePickerLayoutDelegate: UICollectionViewDelegateFlowLayout {
+protocol ImagePickerLayoutDelegate: UICollectionViewDelegateFlowLayout, AnyObject {
   func collectionView(_ collectionView: UICollectionView, layout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
 }
 
@@ -59,8 +59,8 @@ class ImagePickerLayout: UICollectionViewLayout {
 
   }
 
-  var delegate: ImagePickerLayoutDelegate {
-    return collectionView.delegate as! ImagePickerLayoutDelegate
+  weak var delegate: ImagePickerLayoutDelegate? {
+    return collectionView.delegate as? ImagePickerLayoutDelegate
   }
 
   public var lineSpacing: CGFloat = previewInset
@@ -125,7 +125,8 @@ class ImagePickerLayout: UICollectionViewLayout {
 
     var xOffset: CGFloat = 0
     if numberOfItems(inSection: 0) > 0 && mode == .hidingFirstItem {
-      xOffset = -delegate.collectionView(collectionView, layout: self, sizeForItemAt: IndexPath(item: 0, section: 0)).width - lineSpacing
+      let size = delegate?.collectionView(collectionView, layout: self, sizeForItemAt: IndexPath(item: 0, section: 0)) ?? .zero
+      xOffset = -size.width - lineSpacing
     }
 
     let height = self.proposedItemHeight
@@ -133,7 +134,7 @@ class ImagePickerLayout: UICollectionViewLayout {
     for item in 0 ..< numberOfItems(inSection: 0) {
       let indexPath = IndexPath(item: item, section: 0)
 
-      let size = delegate.collectionView(collectionView, layout: self, sizeForItemAt: indexPath)
+      let size = delegate?.collectionView(collectionView, layout: self, sizeForItemAt: indexPath) ?? .zero
 
       let frame = CGRect(origin: .init(x: xOffset, y: 0.0), size: size)
 
