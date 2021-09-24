@@ -108,7 +108,11 @@ public class ImagePicker: UICollectionView {
     register(ImagePickerCell.self, forCellWithReuseIdentifier: NSStringFromClass(ImagePickerCell.self))
 
     topAnchor.constraint(equalTo: alertController.view.topAnchor, constant: 0).isActive = true
-
+    
+    if #available(iOS 15.0, *), let superview = alertController.view.superview {
+      alertController.view.bottomAnchor.constraint(equalTo: superview.bottomAnchor, constant: 0).isActive = true
+    }
+    
     #if targetEnvironment(macCatalyst)
     rightAnchor.constraint(equalTo: alertController.view.rightAnchor, constant: 0).isActive = true
     #else
@@ -179,9 +183,10 @@ public class ImagePicker: UICollectionView {
 
   func updatePreviewHeight() {
     let height = previewsExpanded ? expandedPreviewHeight : previewHeight
-    previewHeightConstraint.constant = height
-    alertHeightConstraint.constant = height + calcHeight(for: alertController)
-    alertHeightConstraint.priority = .defaultHigh + 1
+    
+    previewHeightConstraint?.constant = height
+    alertHeightConstraint?.constant = height + calcHeight(for: alertController)
+    alertHeightConstraint?.priority = .defaultHigh + 1
 
     alertController?.view.superview?.layoutIfNeeded()
   }
